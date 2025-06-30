@@ -1,97 +1,190 @@
-# 📌 Synapse: Cross-Device Focus Management System
+# 🧠 Synapse
 
-**Synapse** helps you stay focused by preventing distractions across all your devices.  
-If you're doing focused work on your **PC**, it blocks distractions like **Instagram, YouTube, WhatsApp, TikTok** on your **phone**.  
-Similarly, if you open distracting websites or apps on **PC**, it shows a blocking popup there too.
+### *A Cross-Device Real-Time Focus Management System*
 
 ---
 
-## 🚀 High-Level Architecture
+## 📍 Overview
 
-| Component | Purpose | Tech |
-| --- | --- | --- |
-| 🖥️ **Desktop App** | Detects currently running PC programs (e.g., VS Code, Notion) and sends focus status to Firebase | Python |
-| 🌐 **Browser Extension** | Detects open distraction websites (e.g., Reddit, YouTube) on Chrome and shows a screen blocker | JavaScript (Chrome Extension) |
-| 📱 **Mobile App** | Shows fullscreen overlays blocking apps like Instagram, WhatsApp when user is in focus mode on PC | Flutter (Android) |
-| ☁️ **Sync Layer** | Real-time focus state sync across devices | Firebase Realtime Database |
+**Synapse** is an intelligent cross-platform focus management tool designed to reduce digital distractions by syncing focus status across your **PC, browser, and phone**. Whether you're writing code, studying, or working remotely, Synapse ensures that when you're in **focus mode**, distractions are **blocked everywhere** automatically.
+
+> 💡 Imagine using VS Code on your PC. Synapse ensures WhatsApp and Instagram are blocked on your phone and Reddit/YouTube are blocked on your browser all in real time.
 
 ---
 
-## 📡 How It Works
+## 🔧 Problem Statement
 
-1. **Focus Detection (PC)**  
-   If user is using a "work app" on PC (e.g., VS Code), the **Desktop App** sets `isWorking = true` in Firebase.
+Today’s work and study sessions are constantly disrupted by multi-device distractions — even when we put our PCs in "focus mode", phones and browsers remain open doors to temptation.
 
-2. **Distraction Monitoring (Phone)**  
-   If user opens Instagram/YouTube during this time → **Mobile App shows a fullscreen overlay** blocking the screen.
+### ❌ Challenge
 
-3. **Distraction Monitoring (PC Browser)**  
-   If user opens Reddit/YouTube/other distraction websites → **Chrome Extension overlays a blocking popup** on the site.
+* PC focus mode doesn't block phone distractions.
+* Browser plugins don’t stop mobile app usage.
+* Manual app blocking is tedious and often forgotten.
 
-4. **Real-time Sync**  
-   Firebase acts as the communication layer → all devices listen to the same focus status in real time.
+### ✅ Solution: **Synapse**
 
----
-
-## 🛠️ Repositories
-
-| Repo | Purpose | Link |
-| --- | --- | --- |
-| 📱 Mobile App | Flutter app that listens for focus state and blocks apps with overlays | [Synapse-Mobile](https://github.com/Utsavvv1/browser-ext) |
-| 🖥️ Desktop App | Python script that detects running work programs and updates Firebase | [Synapse-Desktop](https://github.com/Utsavvv1/harmonicdisruption) |
-| 🌐 Chrome Extension | Browser extension that blocks distracting websites | [Synapse-Extension](https://github.com/Zyphon12342/HarmonicDistruptionApp) |
+* Centralized focus state synced across all devices.
+* Real-time blocking of blacklisted apps/websites.
+* Unified dashboard to configure work and distraction lists.
 
 ---
 
-## ✅ Features (MVP Scope)
+## 🧩 Architecture Diagram
 
-- 🔄 Real-time cross-device syncing
-- 🚫 App and website blockers
-- 🕒 Work session detection (based on active desktop apps)
-- 🌍 Firebase-backed state sync (No backend server needed)
-
----
-
-## 📝 Setup Overview for Each Repo
-
-### Mobile App:
-- Flutter project
-- Needs Firebase Android config
-- Requires overlay and accessibility permissions on device
-
-### Desktop App:
-- Python
-- Uses `psutil` for process detection
-- Uses Firebase REST API for updates
-- Needs a whitelist.json for allowed work apps
-
-### Chrome Extension:
-- JavaScript + HTML + Firebase Web SDK
-- Needs Firebase Web config keys
-- Injects DOM overlays into distraction sites
+```
++-----------------+       Firebase Realtime DB        +--------------------+
+|  💻 Desktop App |  <------------------------------> |  📱 Mobile App       |
+|  (Python)       |                                   |  (Flutter Android)  |
++-----------------+                                   +--------------------+
+        ↑                                                    ↑
+        |                                                    |
+        |   +-------------------+              +----------------------+
+        |   | 🌐 Chrome Extension|              |  User Phone (Android)|
+        |   |  (JavaScript)     |              |  e.g., Instagram     |
+        |   +-------------------+              +----------------------+
+```
 
 ---
 
-## 📈 Future Scope (Optional Extensions)
+## 🚀 Key Components
 
-- Focus analytics dashboard
-- Allow user-defined work/distraction app lists
-- Add iOS support
-- Pomodoro / time tracking features
+| Component               | Role                                                                      | Technology                                    |
+| ----------------------- | ------------------------------------------------------------------------- | --------------------------------------------- |
+| 💻 **Desktop App**      | Monitors active apps (e.g., VSCode, Notion). Sets `isWorking` in Firebase | `Python`, `Tkinter`, `psutil`                 |
+| 📱 **Mobile App**       | Shows overlay on blacklisted apps if `isWorking = true`                   | `Flutter`, `Firebase`, `AccessibilityService` |
+| 🌐 **Chrome Extension** | Detects and overlays blocking message on distraction sites                | `JavaScript`, `Firebase Web SDK`              |
+| ☁️ **Firebase DB**      | Realtime state sharing across devices                                     | `Firebase Realtime DB`                        |
+
+---
+
+## 🔄 How Synapse Works
+
+| Action                                       | Result                                                     |
+| -------------------------------------------- | ---------------------------------------------------------- |
+| 👨‍💻 Starts using Notion / VS Code on PC    | Sets `isWorking = true` in Firebase                        |
+| 📱 Opens Instagram on phone during this time | Phone App shows **fullscreen overlay**, blocks access      |
+| 🌐 Opens YouTube/Reddit in browser           | Chrome Extension blocks page with a **distraction prompt** |
+| 👋 Closes all work apps on PC                | Sets `isWorking = false`, all blocks lifted                |
+
+---
+
+## ✅ Core Features
+
+* 📡 **Real-time Device Sync** via Firebase
+* 🧠 **Smart Focus Mode Detection**
+* ❌ **Cross-Platform App & Website Blocking**
+* ⚙️ **Editable Whitelist & Blacklist**
+* 🔐 **No Backend Server Needed**
+
+---
+
+## 🧪 Technologies Used
+
+| Stack              | Tools                                              |
+| ------------------ | -------------------------------------------------- |
+| Python Desktop App | `psutil`, `tkinter`, `firebase REST API`           |
+| Flutter Mobile App | `Dart`, `firebase_database`, `Overlay Permissions` |
+| Chrome Extension   | `Manifest v3`, `DOM Injection`, `Firebase JS SDK`  |
+| Sync Layer         | `Firebase Realtime Database`                       |
+
+---
+
+## 📁 Repositories
+
+| Component           | Repo                                                                       |
+| ------------------- | -------------------------------------------------------------------------- |
+| 📱 Mobile App       | [Synapse-Mobile](https://github.com/Utsavvv1/browser-ext)                  |
+| 💻 Desktop App      | [Synapse-Desktop](https://github.com/Utsavvv1/harmonicdisruption)          |
+| 🌐 Chrome Extension | [Synapse-Extension](https://github.com/Zyphon12342/HarmonicDistruptionApp) |
+
+---
+
+## 💻 Desktop App Highlights
+
+* Python-based GUI (Tkinter)
+* Detects active processes every `5 seconds`
+* Prompts reason when blacklisted app is opened
+* Sends `focus state` to Firebase
+
+---
+
+## 📱 Mobile App Highlights
+
+* Built in Flutter
+* Monitors foreground app via AccessibilityService
+* If blacklisted app opened when `isWorking = true`, shows overlay
+
+### Key Permissions:
+
+* 📲 Overlay permission
+* 🛡️ Accessibility permission
+* 🔗 Firebase config
+
+---
+
+## 🌐 Chrome Extension Highlights
+
+* Injects DOM overlay into distraction sites
+* Live blocks sites if Firebase `isWorking = true`
+* Lightweight, instant blocking via content script
+
+---
+
+## 🔮 MVP Demo (Suggested Flow)
+
+1. Start using VS Code on PC → Firebase: `isWorking = true`
+2. Try to open Instagram on phone → Blocked with fullscreen warning
+3. Open Reddit on Chrome → Blocked with popup
+4. Close VS Code → All devices unblock
+
+---
+
+## 📊 Future Scope
+
+* 📊 Focus session analytics (time saved, apps blocked)
+* 🧘‍♂️ Pomodoro + break reminders
+* 💪 Auto screen lock if distraction persists
+* 🔒 Auto whitelist/blacklist tuning via ML
+* 🍎 iOS support
+* 💻 Desktop Flutter App for uniform UI/UX
 
 ---
 
 ## 👥 Contributors
 
-- [Utsav Verma](https://github.com/Utsavvv1)
-- [Aaryan Singh Rathore](https://github.com/AaryanSingthRathore)
-- [Anomitra Bhattacharya](https://github.com/anomitroid)
-- [Aditya Negi](https://github.com/Aditya11835)
-- [Shivansh Kandpal](https://github.com/Zyphon12342)
-
+| Name                  | GitHub                                                         |
+| --------------------- | -------------------------------------------------------------- |
+| Utsav Verma           | [@Utsavvv1](https://github.com/Utsavvv1)                       |
+| Aaryan Singh Rathore  | [@AaryanSingthRathore](https://github.com/AaryanSingthRathore) |
+| Anomitra Bhattacharya | [@anomitroid](https://github.com/anomitroid)                   |
+| Aditya Negi           | [@Aditya11835](https://github.com/Aditya11835)                 |
+| Shivansh Kandpal      | [@Zyphon12342](https://github.com/Zyphon12342)                 |
 
 ---
 
-## 📌 License
+## 🛠️ Installation Summary
 
-[MIT License](LICENSE)
+### 🔹 Desktop App:
+
+* Install Python + `requirements.txt`
+* Set Firebase API Key and URL
+* Build .exe using PyInstaller
+* Run Synapse.exe
+
+### 🔹 Mobile App:
+
+* Flutter SDK setup
+* Firebase Android JSON config
+* Grant Accessibility + Overlay permissions
+
+### 🔹 Chrome Extension:
+
+* Load unpacked extension in Chrome
+* Set Firebase config in `popup.js`
+
+---
+
+## 📜 License
+
+This project is licensed under the [MIT License](./LICENSE).
